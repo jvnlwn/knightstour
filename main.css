@@ -1,0 +1,35 @@
+.body {
+    background: #eee;
+}
+
+.board {
+    width: 600px;
+    height: 600px;
+    margin: 10% auto 0;
+    position: relative;
+}
+
+.square {
+    width: 12.5%;
+    height: 12.5%;
+    float: left;
+    font-size: 24px;
+    color: #0012FF;
+    text-align: center;
+    font-family: helvetica;
+    line-height: 75px;
+}
+
+.knight {
+    width: 12.5%;
+    height: 12.5%;
+    position: absolute;
+    transition: all .2s ease;
+}
+
+.knight-body {
+    width: 80%;
+    height: 80%;
+    background: #FF4900;
+    margin: 7px auto 0;
+}
