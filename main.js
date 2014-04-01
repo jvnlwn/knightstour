@@ -1,72 +1,56 @@
 $(document).ready(function () {
     displayBoard();
-    tourBus(itinerary({x: random(), y: random()}, 0));
+    tourBus(itinerary([random(), random()]));
 })
 
 // the tour
-var tour = {};
-// the moves
-tour.moves = [];
-// the knight
-tour.knight = $('.knight');
-// the board
-tour.board = (function () {
-    var board = [];
-    for (var i = 0; i < 8; i++) {
-        board.push([0,0,0,0,0,0,0,0])
-    }
-    return board;
-})();
+var tour = {
+    board: _.map(_.range(8), function (row) { return [0,0,0,0,0,0,0,0]; }),
+    map:   _.zip([-1,  1, -2,  2, -2, 2, -1, 1], [-2, -2, -1, -1,  1, 1,  2, 2])
+};
 
-tour.map = (function () {
-    var x = [-1,  1, -2,  2, -2, 2, -1, 1];
-    var y = [-2, -2, -1, -1,  1, 1,  2, 2];
-    var map = [];
-
-    for (var i = 0; i < 8; i++) {
-        map.push({ x: x[i], y: y[i] });
-    }
-    return map;
-})();
-
-// find all reachable positions not yet landed on
-function search (position) {
+// find all immediate positions not yet landed on
+function scout (position) {
     var positions = [];
     _.each(tour.map, function (mapPosition) {
-        var x = position.x + mapPosition.x;
-        var y = position.y + mapPosition.y;
-        if (tour.board[x] && tour.board[x][y] !== undefined && !tour.board[x][y]) positions.push({x: x, y: y});
+        var x = position[0] + mapPosition[0];
+        var y = position[1] + mapPosition[1];
+        if (tour.board[x] && tour.board[x][y] !== undefined && !tour.board[x][y]) positions.push([x, y]);
     })
+    // return all potential immediate positions that have not yet been landed on
     return positions;
 }
 
-// determine next position by choosing the one that provides the knight with the fewest onward moves
-function reSearch (positions) {
+// determine next position by choosing the one that provides the knight with the fewest onward moves -> Warnsdorff's rule
+function reScout (positions) {
     var options = _.map(positions, function (position) {
-        return search(position).length;
+        return scout(position).length;
     })
+    // return the position with the fewest onward moves
     return positions[options.indexOf(_.min(options))];
 }
 
 // solve the Knight's Tour
-function itinerary (position, num) {
-    tour.board[position.x][position.y] = 1;
-    tour.moves.push(position);
-    return num > 62 ? tour.moves : itinerary(reSearch(search(position)), num + 1);
-}
+itinerary = (function (route) {
+    return function (position) {
+        // change value of each position that has been landed on from 0 to 1
+        tour.board[position[0]][position[1]] = 1;
+        // call itinerary till 64 positions have been pushed to route
+        return route.push(position) === 63 ? route : itinerary(reScout(scout(position)));
+    }
+})([]);
 
 // visualize the tour
 function tourBus (positions) {
     _.each(positions, function (position, i) {
         setTimeout(function () {
-            var square = $('#' + [position.x, position.y].join(''));
-            square.text('x');
-            tour.knight.css({ left: position.x * 75, bottom: position.y * 75 });
+            setTimeout(function () { $('#' + [position[0], position[1]].join('')).text('x'); }, 500)
+            $('.knight').css({ left: position[0] * 75, bottom: position[1] * 75 });
         }, i * 500)
     })
 }
 
-// random nums
+// for random initial position
 function random () {
     return Math.floor(Math.random() * 8);
 }
@@ -77,7 +61,6 @@ function displayBoard () {
     var board = '';
     for (var i = 0; i < 64; i++) {
         if (!(i % 8)) color.reverse();
-        console.log(Math.floor(i / 8), i % 8)
         board += ('<div class="square" id="'+[i % 8, Math.abs(Math.floor(i / 8) - 7)].join('') +'" style="background: '+color[i % 2]+'"></div>')
     }
     $('.board').append(board);
