@@ -36,7 +36,7 @@ itinerary = (function (route) {
         // change value of each position that has been landed on from 0 to 1
         tour.board[position[0]][position[1]] = 1;
         // call itinerary till 64 positions have been pushed to route
-        return route.push(position) === 63 ? route : itinerary(reScout(scout(position)));
+        return route.push(position) === 64 ? route : itinerary(reScout(scout(position)));
     }
 })([]);
 
