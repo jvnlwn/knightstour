@@ -1,11 +1,26 @@
-.body {
+body {
+    color: #2D2D2D;
     background: #eee;
+    font-family: 'Helvetica';
+    text-align: center;
+}
+
+h1 {
+    font-weight: 200;
+    font-size: 72px;
+    margin: 15px 0 0;
+}
+
+a {
+    color: #2D2D2D;
+    display: block;
+    margin-bottom: 30px;
 }
 
 .board {
     width: 600px;
     height: 600px;
-    margin: 10% auto 0;
+    margin: 0 auto;
     position: relative;
 }
 
@@ -16,7 +31,6 @@
     font-size: 24px;
     color: #0012FF;
     text-align: center;
-    font-family: helvetica;
     line-height: 75px;
 }
 
